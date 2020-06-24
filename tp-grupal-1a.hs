@@ -32,6 +32,7 @@ procesarArchivo :: String -> DataSet
 procesarArchivo x = if lista = [] then map (validarLinea . cargarArbol) lista else [] where lista = (lines x)
 
 validarLinea :: [String] -> (Maybe [String])
+validarLinea [] = Just []
 validarLinea = undefined
 
 cargarArbol :: Maybe [String] -> ArbolNivel
