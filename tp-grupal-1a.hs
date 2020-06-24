@@ -29,9 +29,16 @@ main = do
 -- Sin filas repetidas
 -- Orde Lexicográfico
 procesarArchivo :: String -> DataSet
-procesarArchivo x = []
+procesarArchivo x = if lista = [] then map (validarLinea . cargarArbol) lista else [] where lista = (lines x)
+
+validarLinea :: [String] -> (Maybe [String])
+validarLinea = undefined
+
+cargarArbol :: Maybe [String] -> ArbolNivel
+cargarArbol = undefined
 
 type Hoja = (Char,Int) 
-data ArbolNivel = Nodo Char [ArbolNivel] | Hoja
+data ArbolNivel = Nodo Int [ArbolNivel] | Hoja
 type DataSet = [ArbolNivel]
+
 
