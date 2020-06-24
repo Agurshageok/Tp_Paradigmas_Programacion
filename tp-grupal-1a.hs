@@ -33,19 +33,19 @@ main = do
 -- Orde Lexicográfico
 procesarArchivo :: [String] -> DataSet -> DataSet
 procesarArchivo [] y = []
-procesarArchivo xs y = -- si esRama xs y then ***** insertarRama xs (buscarArbol xs y) else generarArbolNuevo xs y
+procesarArchivo xs y = if esRama xs y then insertarRama xs y else generarArbolNuevo xs y
 
---- ***** aca faltaria ver como volver a la lista de arboles sin generar dos arboles repetidos
 
+-- es rama de alguno de los arboles?
 esRama :: [String] -> DataSet -> Bool
 esRama xs [] = False
 esRama xs (y:ys) = if esrama2 xs y then True else False
 
--- Suponiendo que esta verificado que todos tienen la misma longitud?
+-- es rama de ese arbol en particular
 esRama2 :: [String] -> ArbolNivel -> Bool
 esRama2 (x:[]) (c,n) = sonIguales (split2 x) (c,n) -- si son iguales que retorne true si no que retorne false (?)
 esRama2 (x:xs) (c,n) = True -- Suponemos que llegamos a la hoja del arbol pero la lista de string es una rama mas larga entonces es verdadero igual
-esRama2 (x:xs) (Nodo c (y:ys))= if x notContains x "-" then (if x == c then esRama2 xs ys else False) else True -- Si es hoja el elemento del string significa que llegue al final de la rama y es una rama del arbol mas chica, por ende verdadero.
+esRama2 (x:xs) (Nodo c (y:ys))= if notContains x "-" then (if x == c then esRama2 xs ys else False) else True -- Si es hoja el elemento del string significa que llegue al final de la rama y es una rama del arbol mas chica, por ende verdadero.
 
 -- notContains deberia verificar que x no tiene el - que indicaria que seria la hoja
 
@@ -59,12 +59,24 @@ buscarArbol :: [String] -> DataSet -> ArbolNivel
 buscarArbol xs (y:ys) = if esRama2 xs y then y else buscarArbol xs ys
 
 --inserto la rama nueva al arbol pre-existente
-insertarRama :: [String] -> ArbolNivel -> ArbolNivel -- Me enquilombe al pensar como insertarlo
-insertarRama (x:xs) (Nodo c (y:ys)) = if x notContains x "-" then (if x == c then (if nodoDe y == x then Nodo c (insertarRama xs (y:ys)) else Nodo c (y:  ) 
+insertarRama:: [String] -> DataSet -> DataSet -- esta ok?
+insertarRama xs (y:ys) = if esRama2 xs y then ((insertarRama2 xs y): ys) else (y:insertarRama xs ys)
 
+insertarRama2 :: [String] -> ArbolNivel -> ArbolNivel -- esta ok?
+insertarRama2 (x:xs) (Nodo c (y:ys)) = if notContains x "-" then (if x == c then (if nodoDe y == head(xs) then Nodo c (insertarRama2 xs (y:ys)) else Nodo c (generarArbol xs :(y:ys)))) 
+
+-- armo arbol ya sea para ser una rama de un arbol o para armar arbol nuevo
+generarArbol :: [String] -> ArbolNivel -- no se si estara correcto... habrá que probar
+generarArbol (x:[]) = (armarHoja (split2 x): [])
+generarArbol (x:xs) = Nodo x (generarArbol xs: []) 
+
+-- Armo la hoja para la rama.
+armarHoja :: [String] -> ArbolNivel
+armarHoja (x:y) = (x,head(y))
+
+--Insserto el nuevo armo a la lista de arboles
 generarArbolNuevo :: [String] -> DataSet -> DataSet
-generarArbolNuevo (x:xs) [] =  Nodo x -- idem ya me queme para pensarlo
-generarArbolNuevo (xs) (y:ys) = (y: generarArbolNuevo xs ys)
+generarArbolNuevo (xs) (ys) = (generarArbol xs : ys)
 
 type Hoja = (Char,Int) 
 data ArbolNivel = Nodo Char [ArbolNivel] | Hoja
