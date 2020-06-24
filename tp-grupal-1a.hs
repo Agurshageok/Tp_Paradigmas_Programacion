@@ -17,6 +17,7 @@ main = do
             fileOutName <- getLine
             --calcular totales
             --escribir archivo
+            putStrLn "Fin"
         else do 
             putStrLn "No existe archivo"
     putStrLn "Desea realizar otro procesamiento S/N"
@@ -29,7 +30,8 @@ main = do
 -- Sin filas repetidas
 -- Orde Lexicográfico
 procesarArchivo :: String -> DataSet
-procesarArchivo x = if lista = [] then map (validarLinea . cargarArbol) lista else [] where lista = (lines x)
+--procesarArchivo x = if lista == [] then map (validarLinea . cargarArbol) lista else [] where lista = (lines x)
+procesarArchivo = undefined
 
 validarLinea :: [String] -> (Maybe [String])
 validarLinea [] = Just []
